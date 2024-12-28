@@ -1,98 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amazon India Fee Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      padding: 20px;
-      background-color: #f9f9f9;
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon India Fee Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+    .form-section {
+      flex: 1;
+      margin-right: 20px;
     }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
+    .output-section {
+      flex: 1;
+      padding-left: 20px;
+      border-left: 1px solid #ccc;
     }
-    .input-group {
-      margin-bottom: 10px;
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+    .input-group.flex {
+      display: flex;
+      justify-content: space-between;
     }
-    label {
-      display: block;
-      margin-bottom: 5px;
+    .input-group.flex > div {
+      flex: 1;
+      margin-right: 10px;
     }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+    .input-group.flex > div:last-child {
+      margin-right: 0;
     }
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .output {
-      margin-top: 20px;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-</head>
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .output {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .output div {
+        margin-bottom: 8px;
+      }
+      .output strong {
+        color: #333;
+      }
+      canvas {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+  </head>
 <body>
   <div class="container">
-    <h1>Amazon India Fee Calculator</h1>
+    <div class="form-section">
+    <h1>Amazon India Seller Profit Calculator</h1>
 
-    <div class="input-group">
+      <div class="input-group flex">
+        <div>
       <label for="referralFee">Referral Fee (%)</label>
       <input type="number" id="referralFee" placeholder="Enter Referral Fee %" value="10">
     </div>
-    <div class="input-group">
+        <div>
       <label for="listingPrice">Listing Price</label>
       <input type="number" id="listingPrice" placeholder="Enter Listing Price" value="250">
     </div>
-    <div class="input-group">
+      </div>
+
+      <div class="input-group flex">
+        <div>
       <label for="purchasePrice">Purchase Price</label>
       <input type="number" id="purchasePrice" placeholder="Enter Purchase Price" value="100">
     </div>
-    <div class="input-group">
-      <label for="additionalCost">Additional Cost (Tap, Bubble, Box)</label>
+        <div>
+      <label for="additionalCost">Additional Cost(Box)</label>
       <input type="number" id="additionalCost" placeholder="Enter Additional Cost" value="20">
     </div>
-    <div class="input-group">
+      </div>
+
+      <div class="input-group flex">
+        <div>
       <label for="length">Length (cm)</label>
       <input type="number" id="length" placeholder="Enter Length (cm)" value="10">
     </div>
-    <div class="input-group">
+        <div>
       <label for="breadth">Breadth (cm)</label>
-      <input type="number" id="breadth" placeholder="Enter Breadth (cm)" value="10">
+          <input type="number" id="breadth" placeholder="Enter Breadth (cm)" value="10">
     </div>
-    <div class="input-group">
+      </div>
+
+      <div class="input-group flex">
+        <div>
       <label for="height">Height (cm)</label>
       <input type="number" id="height" placeholder="Enter Height (cm)" value="10">
     </div>
-    <div class="input-group">
+        <div>
       <label for="actualWeight">Actual Weight (gm)</label>
       <input type="number" id="actualWeight" placeholder="Enter Actual Weight (gm)" value="500">
     </div>
-    <div class="input-group">
+      </div>
+
+      <div class="input-group flex">
+        <div>
       <label for="estimateReturn">Estimate Return (%)</label>
       <input type="number" id="estimateReturn" placeholder="Enter Estimate Return (%)" value="10">
     </div>
-    <div class="input-group">
+        <div>
       <label for="channelType">Channel Type</label>
       <select id="channelType">
         <option value="Seller Flex">Seller Flex</option>
         <option value="Merchant">Merchant</option>
       </select>
     </div>
+      </div>
+
     <div class="input-group">
       <label for="performanceLevel">Performance Level</label>
       <select id="performanceLevel">
@@ -104,9 +170,11 @@
     </div>
 
     <button onclick="displayFees()">Calculate</button>
+    </div>
 
-    <div class="output">
+    <div class="output-section">
       <h3>Output</h3>
+      <div class="output">
       <div><strong>Referral Fees with GST:</strong> <span id="referralFees"></span></div>
       <div><strong>Closed Fee With GST:</strong> <span id="closedFee"></span></div>
       <div><strong>Technology Fee with GST:</strong> 15.34</div>
@@ -117,19 +185,20 @@
       <div><strong>Refund Product Cost:</strong> <span id="refundProductCost"></span></div>
       <div><strong>Total Fees:</strong> <span id="totalFees"></span></div>
       <div><strong>Total Product Cost:</strong> <span id="totalProductCost"></span></div>
-      <div><strong>Net Profit Per Order:</strong> <span id="netProfitPerOrder"></span></div>
       <div><strong>Profit Margin:</strong> <span id="profitMargin"></span></div>
+      <div><strong>Net Profit Per Order:</strong> <span id="netProfitPerOrder"></span></div>
     </div>
   </div>
+  </div>
   <div class="container">
-    <canvas id="profitChart"></canvas> </div>
+    <canvas id="profitChart"></canvas>
+  </div>
 
   <script>
-
     function generateChartData(purchasePrice, additionalCost) {
       const chartData = [];
       for (let listingPrice = purchasePrice; listingPrice <= purchasePrice * 5; listingPrice += 10) {
-        const fees = calculateFees(listingPrice); // Pass listingPrice to calculateFees
+        const fees = calculateFees(listingPrice);
         chartData.push({ x: listingPrice, y: fees.profitMargin });
       }
       return chartData;
@@ -265,7 +334,6 @@
 
 
       // Refund Commission Fee With GST (simplified)
-      
       function calculateRefundCommissionFee(listingPrice, performanceLevel, estimateReturn) {
           let basePrice = 0;
 
@@ -289,6 +357,8 @@
 
           return (basePrice * 1.18) * (estimateReturn / 100);
       }
+
+
 
       let refundCommissionFee = calculateRefundCommissionFee(listingPrice, performanceLevel, estimateReturn);
 
@@ -331,6 +401,9 @@
       };
     }
 
+    const ctx = document.getElementById('profitChart').getContext('2d');
+    let myChart; // Declare chart variable outside
+
     function displayFees() {
       const fees = calculateFees();
     
@@ -346,7 +419,7 @@
       document.getElementById('totalFees').innerText = fees.totalFees.toFixed(2);
       document.getElementById('totalProductCost').innerText = fees.totalProductCost.toFixed(2);
       document.getElementById('netProfitPerOrder').innerText = fees.netProfitPerOrder.toFixed(2);
-      document.getElementById('profitMargin').innerText = fees.profitMargin.toFixed(2);
+      document.getElementById('profitMargin').innerText = fees.profitMargin.toFixed(2) + '%';
       
       // charting logic
 
@@ -354,9 +427,13 @@
       const additionalCost = parseFloat(document.getElementById('additionalCost').value);
       const chartData = generateChartData(purchasePrice, additionalCost);
 
-      const ctx = document.getElementById('profitChart').getContext('2d');
-
-      new Chart(ctx, {
+      if (myChart) {
+        // Update existing chart
+        myChart.data.datasets[0].data = chartData;
+        myChart.update();
+      }
+      else {
+      myChart = new Chart(ctx, {
         type: 'line',
         data: {
           datasets: [{
@@ -384,6 +461,7 @@
           }
         }
       });
+    }
 
     
     }
