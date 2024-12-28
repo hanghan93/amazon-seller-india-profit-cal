@@ -269,7 +269,7 @@
       const refundClosedFee = -closedFeeWithGST * (estimateReturn / 100);
 
       // Refund Product Cost
-      const refundProductCost = purchasePrice * (estimateReturn / 100);
+      const refundProductCost = (purchasePrice + additionalCost) * (estimateReturn / 100);
 
       const totalFees =
         referralFeesWithGST +
