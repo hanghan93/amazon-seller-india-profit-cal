@@ -160,16 +160,96 @@
       closedFeeWithGST = closedFeeWithGST * 1.18;
 
       // Weight Handling Fee with GST
-      let weightHandlingFeeWithGST = 0;
-      if (channelType === "Seller Flex") {
-        if (weight <= 500) {
-          if (performanceLevel === "Premium") weightHandlingFeeWithGST = 62;
-          else if (performanceLevel === "Advanced") weightHandlingFeeWithGST = 62;
-          else if (performanceLevel === "Standard") weightHandlingFeeWithGST = 63;
-          else if (performanceLevel === "Basic") weightHandlingFeeWithGST = 67;
-        }
-        // Further conditions can be added as needed
+      let weightHandlingFeeWithGST = calculateWeightHandlingFees(channelType, weight, performanceLevel);
+
+      function calculateWeightHandlingFees(sellerType, weight, serviceLevel) {
+          function ceiling(val, precision) {
+              return Math.ceil(val / precision) * precision;
+          }
+
+          let price;
+
+          if (sellerType === "Seller Flex") {
+              if (weight <= 500) {
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 62;
+                  } else if (serviceLevel === "Standard") {
+                      price = 63;
+                  } else if (serviceLevel === "Basic") {
+                      price = 67;
+                  }
+              } else if (weight <= 1000) {
+                  let additionalPrice = ceiling((weight - 500), 500) / 500 * 25;
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 62 + additionalPrice;
+                  } else if (serviceLevel === "Standard") {
+                      price = 63 + additionalPrice;
+                  } else if (serviceLevel === "Basic") {
+                      price = 67 + additionalPrice;
+                  }
+              } else if (weight <= 5000) {
+                  let additionalPrice = 25 + ceiling((weight - 1000), 1000) / 1000 * 33;
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 62 + additionalPrice;
+                  } else if (serviceLevel === "Standard") {
+                      price = 63 + additionalPrice;
+                  } else if (serviceLevel === "Basic") {
+                      price = 67 + additionalPrice;
+                  }
+              } else {
+                  let additionalPrice = 25 + ceiling((weight - 1000), 1000) / 1000 * 33 + ceiling((weight - 5000), 1000) / 1000 * 16;
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 62 + additionalPrice;
+                  } else if (serviceLevel === "Standard") {
+                      price = 63 + additionalPrice;
+                  } else if (serviceLevel === "Basic") {
+                      price = 67 + additionalPrice;
+                  }
+              }
+          } else if (sellerType === "Merchant") {
+              if (weight <= 500) {
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 76;
+                  } else if (serviceLevel === "Standard") {
+                      price = 77;
+                  } else if (serviceLevel === "Basic") {
+                      price = 81;
+                  }
+              } else if (weight <= 1000) {
+                  let additionalPrice = ceiling((weight - 500), 500) / 500 * 25;
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 76 + additionalPrice;
+                  } else if (serviceLevel === "Standard") {
+                      price = 77 + additionalPrice;
+                  } else if (serviceLevel === "Basic") {
+                      price = 81 + additionalPrice;
+                  }
+              } else if (weight <= 5000) {
+                  let additionalPrice = 25 + ceiling((weight - 1000), 1000) / 1000 * 33;
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 76 + additionalPrice;
+                  } else if (serviceLevel === "Standard") {
+                      price = 77 + additionalPrice;
+                  } else if (serviceLevel === "Basic") {
+                      price = 81 + additionalPrice;
+                  }
+              } else {
+                  let additionalPrice = 25 + ceiling((weight - 1000), 1000) / 1000 * 33 + ceiling((weight - 5000), 1000) / 1000 * 16;
+                  if (serviceLevel === "Premium" || serviceLevel === "Advanced") {
+                      price = 76 + additionalPrice;
+                  } else if (serviceLevel === "Standard") {
+                      price = 77 + additionalPrice;
+                  } else if (serviceLevel === "Basic") {
+                      price = 81 + additionalPrice;
+                  }
+              }
+          } else {
+              return "Invalid Seller Type";
+          }
+
+          return price * 1.18;
       }
+
 
       // Refund Commission Fee With GST (simplified)
       let refundCommissionFee = 0;
