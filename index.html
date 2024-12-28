@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Fee Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .output {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Referral Fee Calculator</h1>
+
+    <div class="input-group">
+      <label for="referralFee">Referral Fee (%)</label>
+      <input type="number" id="referralFee" placeholder="Enter Referral Fee %">
+    </div>
+    <div class="input-group">
+      <label for="listingPrice">Listing Price</label>
+      <input type="number" id="listingPrice" placeholder="Enter Listing Price">
+    </div>
+    <div class="input-group">
+      <label for="purchasePrice">Purchase Price</label>
+      <input type="number" id="purchasePrice" placeholder="Enter Purchase Price">
+    </div>
+    <div class="input-group">
+      <label for="additionalCost">Additional Cost (Tap, Bubble, Box)</label>
+      <input type="number" id="additionalCost" placeholder="Enter Additional Cost">
+    </div>
+    <div class="input-group">
+      <label for="length">Length (cm)</label>
+      <input type="number" id="length" placeholder="Enter Length (cm)">
+    </div>
+    <div class="input-group">
+      <label for="breadth">Breadth (cm)</label>
+      <input type="number" id="breadth" placeholder="Enter Breadth (cm)">
+    </div>
+    <div class="input-group">
+      <label for="height">Height (cm)</label>
+      <input type="number" id="height" placeholder="Enter Height (cm)">
+    </div>
+    <div class="input-group">
+      <label for="actualWeight">Actual Weight (gm)</label>
+      <input type="number" id="actualWeight" placeholder="Enter Actual Weight (gm)">
+    </div>
+    <div class="input-group">
+      <label for="estimateReturn">Estimate Return (%)</label>
+      <input type="number" id="estimateReturn" placeholder="Enter Estimate Return (%)">
+    </div>
+    <div class="input-group">
+      <label for="channelType">Channel Type</label>
+      <select id="channelType">
+        <option value="Seller Flex">Seller Flex</option>
+        <option value="Merchant">Merchant</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="performanceLevel">Performance Level</label>
+      <select id="performanceLevel">
+        <option value="Premium">Premium</option>
+        <option value="Advanced">Advanced</option>
+        <option value="Standard">Standard</option>
+        <option value="Basic">Basic</option>
+      </select>
+    </div>
+
+    <button onclick="calculateFees()">Calculate</button>
+
+    <div class="output">
+      <h3>Output</h3>
+      <div><strong>Referral Fees with GST:</strong> <span id="referralFees"></span></div>
+      <div><strong>Closed Fee With GST:</strong> <span id="closedFee"></span></div>
+      <div><strong>Technology Fee with GST:</strong> 15.34</div>
+      <div><strong>Weight Handling Fee with GST:</strong> <span id="weightHandlingFee"></span></div>
+      <div><strong>Refund Commission Fee With GST:</strong> <span id="refundCommissionFee"></span></div>
+      <div><strong>Refund Referral Fees with GST:</strong> <span id="refundReferralFees"></span></div>
+      <div><strong>Refund Closed Fee with GST:</strong> <span id="refundClosedFee"></span></div>
+      <div><strong>Refund Product Cost:</strong> <span id="refundProductCost"></span></div>
+      <div><strong>Total Fees:</strong> <span id="totalFees"></span></div>
+      <div><strong>Total Product Cost:</strong> <span id="totalProductCost"></span></div>
+      <div><strong>Net Profit Per Order:</strong> <span id="netProfitPerOrder"></span></div>
+      <div><strong>Profit Margin:</strong> <span id="profitMargin"></span></div>
+    </div>
+  </div>
+
+  <script>
+    function calculateFees() {
+      const referralFee = parseFloat(document.getElementById('referralFee').value);
+      const listingPrice = parseFloat(document.getElementById('listingPrice').value);
+      const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+      const additionalCost = parseFloat(document.getElementById('additionalCost').value);
+      const length = parseFloat(document.getElementById('length').value);
+      const breadth = parseFloat(document.getElementById('breadth').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const actualWeight = parseFloat(document.getElementById('actualWeight').value);
+      const estimateReturn = parseFloat(document.getElementById('estimateReturn').value);
+      const channelType = document.getElementById('channelType').value;
+      const performanceLevel = document.getElementById('performanceLevel').value;
+      const technologyFee = 15.34;
+
+
+      // Volumetric Weight
+      const volumetricWeight = (length * breadth * height) / 5;
+      const weight = Math.max(volumetricWeight, actualWeight);
+
+      // Referral Fees with GST
+      const referralFeesWithGST = ((listingPrice * referralFee) / 100) * 1.18;
+
+      // Closed Fee With GST
+      let closedFeeWithGST = 0;
+      if (channelType === "Seller Flex") {
+        if (listingPrice <= 250) closedFeeWithGST = 7;
+        else if (listingPrice <= 500) closedFeeWithGST = 11;
+        else if (listingPrice <= 1000) closedFeeWithGST = 30;
+        else closedFeeWithGST = 61;
+      } else if (channelType === "Merchant") {
+        if (listingPrice <= 250) closedFeeWithGST = 4;
+        else if (listingPrice <= 500) closedFeeWithGST = 9;
+        else if (listingPrice <= 1000) closedFeeWithGST = 30;
+        else closedFeeWithGST = 61;
+      }
+      closedFeeWithGST = closedFeeWithGST * 1.18;
+
+      // Weight Handling Fee with GST
+      let weightHandlingFeeWithGST = 0;
+      if (channelType === "Seller Flex") {
+        if (weight <= 500) {
+          if (performanceLevel === "Premium") weightHandlingFeeWithGST = 62;
+          else if (performanceLevel === "Advanced") weightHandlingFeeWithGST = 62;
+          else if (performanceLevel === "Standard") weightHandlingFeeWithGST = 63;
+          else if (performanceLevel === "Basic") weightHandlingFeeWithGST = 67;
+        }
+        // Further conditions can be added as needed
+      }
+
+      // Refund Commission Fee With GST (simplified)
+      let refundCommissionFee = 0;
+      if (listingPrice <= 250) {
+        if (performanceLevel === "Basic") refundCommissionFee = 50;
+        else if (performanceLevel === "Standard") refundCommissionFee = 45;
+        else if (performanceLevel === "Advanced") refundCommissionFee = 40;
+        else if (performanceLevel === "Premium") refundCommissionFee = 40;
+      }
+
+      refundCommissionFee = refundCommissionFee * 1.18 * (estimateReturn / 100);
+
+      // Refund Referral Fees with GST
+      const refundReferralFees = -referralFeesWithGST * (estimateReturn / 100);
+
+      // Refund Closed Fee with GST
+      const refundClosedFee = -closedFeeWithGST * (estimateReturn / 100);
+
+      // Refund Product Cost
+      const refundProductCost = purchasePrice * (estimateReturn / 100);
+
+      const totalFees =
+        referralFeesWithGST +
+        closedFeeWithGST +
+        weightHandlingFeeWithGST +
+        technologyFee +
+        refundCommissionFee +
+        refundReferralFees +
+        refundClosedFee +
+        refundProductCost;
+
+      const totalProductCost = purchasePrice + additionalCost;
+      const netProfitPerOrder = listingPrice - totalProductCost - totalFees;
+
+      const profitMargin = netProfitPerOrder*100/totalProductCost;
+
+
+
+      // Display the output
+      document.getElementById('referralFees').textContent = referralFeesWithGST.toFixed(2);
+      document.getElementById('closedFee').textContent = closedFeeWithGST.toFixed(2);
+      document.getElementById('weightHandlingFee').textContent = weightHandlingFeeWithGST.toFixed(2);
+      document.getElementById('refundCommissionFee').textContent = refundCommissionFee.toFixed(2);
+      document.getElementById('refundReferralFees').textContent = refundReferralFees.toFixed(2);
+      document.getElementById('refundClosedFee').textContent = refundClosedFee.toFixed(2);
+      document.getElementById('refundProductCost').textContent = refundProductCost.toFixed(2);
+      document.getElementById('totalFees').textContent = totalFees.toFixed(2);
+      document.getElementById('totalProductCost').textContent = totalProductCost.toFixed(2);
+      document.getElementById('netProfitPerOrder').textContent = netProfitPerOrder.toFixed(2);
+      document.getElementById('profitMargin').textContent = profitMargin.toFixed(2);
+    
+    }
+  </script>
+</body>
+</html>
