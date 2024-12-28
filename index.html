@@ -265,15 +265,32 @@
 
 
       // Refund Commission Fee With GST (simplified)
-      let refundCommissionFee = 0;
-      if (listingPrice <= 250) {
-        if (performanceLevel === "Basic") refundCommissionFee = 50;
-        else if (performanceLevel === "Standard") refundCommissionFee = 45;
-        else if (performanceLevel === "Advanced") refundCommissionFee = 40;
-        else if (performanceLevel === "Premium") refundCommissionFee = 40;
+      
+      function calculateRefundCommissionFee(listingPrice, performanceLevel, estimateReturn) {
+          let basePrice = 0;
+
+          if (listingPrice <= 250) {
+              if (performanceLevel === "Basic") basePrice = 50;
+              else if (performanceLevel === "Standard") basePrice = 45;
+              else if (performanceLevel === "Advanced" || performanceLevel === "Premium") basePrice = 40;
+          } else if (listingPrice <= 500) {
+              if (performanceLevel === "Basic") basePrice = 75;
+              else if (performanceLevel === "Standard") basePrice = 70;
+              else if (performanceLevel === "Advanced" || performanceLevel === "Premium") basePrice = 65;
+          } else if (listingPrice <= 1000) {
+              if (performanceLevel === "Basic") basePrice = 100;
+              else if (performanceLevel === "Standard") basePrice = 95;
+              else if (performanceLevel === "Advanced" || performanceLevel === "Premium") basePrice = 85;
+          } else {
+              if (performanceLevel === "Basic") basePrice = 140;
+              else if (performanceLevel === "Standard") basePrice = 130;
+              else if (performanceLevel === "Advanced" || performanceLevel === "Premium") basePrice = 110;
+          }
+
+          return (basePrice * 1.18) * (estimateReturn / 100);
       }
 
-      refundCommissionFee = refundCommissionFee * 1.18 * (estimateReturn / 100);
+      let refundCommissionFee = calculateRefundCommissionFee(listingPrice, performanceLevel, estimateReturn);
 
       // Refund Referral Fees with GST
       const refundReferralFees = -referralFeesWithGST * (estimateReturn / 100);
