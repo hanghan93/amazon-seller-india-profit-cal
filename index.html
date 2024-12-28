@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amazon India Seller Profit Calculator</title>
+  <title>Amazon India Fee Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -44,6 +44,7 @@
       margin-top: 20px;
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 </head>
 <body>
   <div class="container">
@@ -102,7 +103,7 @@
       </select>
     </div>
 
-    <button onclick="calculateFees()">Calculate</button>
+    <button onclick="displayFees()">Calculate</button>
 
     <div class="output">
       <h3>Output</h3>
@@ -120,11 +121,23 @@
       <div><strong>Profit Margin:</strong> <span id="profitMargin"></span></div>
     </div>
   </div>
+  <div class="container">
+    <canvas id="profitChart"></canvas> </div>
 
   <script>
-    function calculateFees() {
+
+    function generateChartData(purchasePrice, additionalCost) {
+      const chartData = [];
+      for (let listingPrice = purchasePrice; listingPrice <= purchasePrice * 5; listingPrice += 10) {
+        const fees = calculateFees(listingPrice); // Pass listingPrice to calculateFees
+        chartData.push({ x: listingPrice, y: fees.profitMargin });
+      }
+      return chartData;
+    }
+
+    function calculateFees(listingPriceOverride) {
       const referralFee = parseFloat(document.getElementById('referralFee').value);
-      const listingPrice = parseFloat(document.getElementById('listingPrice').value);
+      const listingPrice = listingPriceOverride || parseFloat(document.getElementById('listingPrice').value);
       const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
       const additionalCost = parseFloat(document.getElementById('additionalCost').value);
       const length = parseFloat(document.getElementById('length').value);
@@ -286,22 +299,78 @@
 
       const profitMargin = netProfitPerOrder*100/totalProductCost;
 
+      return {
+        referralFeesWithGST,
+        closedFeeWithGST,
+        weightHandlingFeeWithGST,
+        refundCommissionFee,
+        refundReferralFees,
+        refundClosedFee,
+        refundProductCost,
+        totalFees,
+        totalProductCost,
+        netProfitPerOrder,
+        profitMargin,
+      };
+    }
 
+    function displayFees() {
+      const fees = calculateFees();
+    
 
       // Display the output
-      document.getElementById('referralFees').textContent = referralFeesWithGST.toFixed(2);
-      document.getElementById('closedFee').textContent = closedFeeWithGST.toFixed(2);
-      document.getElementById('weightHandlingFee').textContent = weightHandlingFeeWithGST.toFixed(2);
-      document.getElementById('refundCommissionFee').textContent = refundCommissionFee.toFixed(2);
-      document.getElementById('refundReferralFees').textContent = refundReferralFees.toFixed(2);
-      document.getElementById('refundClosedFee').textContent = refundClosedFee.toFixed(2);
-      document.getElementById('refundProductCost').textContent = refundProductCost.toFixed(2);
-      document.getElementById('totalFees').textContent = totalFees.toFixed(2);
-      document.getElementById('totalProductCost').textContent = totalProductCost.toFixed(2);
-      document.getElementById('netProfitPerOrder').textContent = netProfitPerOrder.toFixed(2);
-      document.getElementById('profitMargin').textContent = profitMargin.toFixed(2);
+      document.getElementById('referralFees').innerText = fees.referralFeesWithGST.toFixed(2);
+      document.getElementById('closedFee').innerText = fees.closedFeeWithGST.toFixed(2);
+      document.getElementById('weightHandlingFee').innerText = fees.weightHandlingFeeWithGST.toFixed(2);
+      document.getElementById('refundCommissionFee').innerText =fees.refundCommissionFee.toFixed(2);
+      document.getElementById('refundReferralFees').innerText = fees.refundReferralFees.toFixed(2);
+      document.getElementById('refundClosedFee').innerText = fees.refundClosedFee.toFixed(2);
+      document.getElementById('refundProductCost').innerText = fees.refundProductCost.toFixed(2);
+      document.getElementById('totalFees').innerText = fees.totalFees.toFixed(2);
+      document.getElementById('totalProductCost').innerText = fees.totalProductCost.toFixed(2);
+      document.getElementById('netProfitPerOrder').innerText = fees.netProfitPerOrder.toFixed(2);
+      document.getElementById('profitMargin').innerText = fees.profitMargin.toFixed(2);
+      
+      // charting logic
+
+      const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+      const additionalCost = parseFloat(document.getElementById('additionalCost').value);
+      const chartData = generateChartData(purchasePrice, additionalCost);
+
+      const ctx = document.getElementById('profitChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Profit Margin',
+            data: chartData, // Use generated chart data
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'Listing Price'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Profit Margin (%)'
+              }
+            }
+          }
+        }
+      });
+
     
     }
+
   </script>
 </body>
 </html>
